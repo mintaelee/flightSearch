@@ -2,8 +2,7 @@ const http = require('http')
 const url = require('url')
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
-const unirest = require('unirest')
+// const unirest = require('unirest')
 
 const port = process.argv[2] || 8000
 console.log('argv: ', process.argv)
