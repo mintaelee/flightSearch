@@ -4,6 +4,7 @@ window.onload = function () {
 }
 function init(){
     let httpRequest
+
     document.querySelector(".submit-button")
         .addEventListener('click', makeRequest)
 }
@@ -48,18 +49,22 @@ function processContents() {
     }
 }
 function displayMinPrice(quotes) {
-    let resultDisplay = document.querySelector(".container > .result-container")
+    let resultDisplay = document.querySelector(".row > .card-deck")
     let results = ''
+    let count = 1
 
     for (let quote in quotes){
         if (quotes.hasOwnProperty(quote)){
+            let direct = 'Direct Flight'
+            if (!quotes[quote].Direct){
+                direct = 'Indirect Flight'
+            } 
             results += `<div class="card mb-4 shadow-sm">
                         <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">Minimum Price</h4>
+                            <h4 class="my-0 font-weight-normal">${direct}</h4>
                         </div>
                         <div class="card-body">
-                            <h1 class="card-title pricing-card-title">$${quotes[quote].MinPrice} </h1>
-                            <h1 class="card-title pricing-card-title">${quotes[quote].Direct} </h1>
+                            <h1 class="card-title pricing-card-title">$${quotes[quote].MinPrice}</h1>
                         </div>
                     </div>`
         }
