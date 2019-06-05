@@ -4,55 +4,74 @@ window.onload = function () {
 }
 function init(){
     let httpRequest
-
-    function makeRequest(){
-        httpRequest = new XMLHttpRequest()
-
-        if (!httpRequest) {
-            alert("Giving up! Cannot create an XMLHTTP instance")
-        }
-
-        httpRequest.onreadystatechange = processContents
-        httpRequest.open("GET", "http://data.fixer.io/api/latest?access_key=8631f683cfb86da7396242e93adf7375&&symbols=USD,GBP,CAD")
-        httpRequest.send()
-    }
-
-    function processContents() {
-        if(httpRequest.readyState === XMLHttpRequest.DONE){
-            if (httpRequest.status === 200){
-                let data = httpRequest.responseText
-
-                if (data) {
-                    data = JSON.parse(data)
-
-                    if (data.rates) createCards(data.rates)
-                }
-            
-            } else {
-                alert("There was a problem with request")
-            }
-        }
-    }
-    function createCards(items) {
-        let cardDeck = document.querySelector(".container > .card-deck")
-        let cards = ''
-    
-        for (let item in items){
-            if (items.hasOwnProperty(item)){
-                cards += `<div class="card mb-4 shadow-sm">
-                            <div class="card-header">
-                                <h4 class="my-0 font-weight-normal">${item}</h4>
-                            </div>
-                            <div class="card-body">
-                                <h1 class="card-title pricing-card-title">${items[item]} </h1>
-                            </div>
-                        </div>`
-            }
-        }
-        cardDeck.innerHTML = cards
-    }
-    
-    makeRequest()
+    document.querySelector(".submit-button")
+        .addEventListener('click', makeRequest)
 }
+
+
+
+function makeRequest(){
+    
+    httpRequest = new XMLHttpRequest()
+
+    if (!httpRequest) {
+        alert("Giving up! Cannot create an XMLHTTP instance")
+    }
+
+    let originplace = document.querySelector(".originplace").value
+    let destinationplace = document.querySelector(".destinationplace").value
+    let outboundpartialdate = document.querySelector(".date").value
+
+    let URL = `https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/${originplace}-sky/${destinationplace}-sky/${outboundpartialdate}`
+
+    httpRequest.onreadystatechange = processContents
+    httpRequest.open("GET", URL)
+    httpRequest.setRequestHeader("X-RapidAPI-Host", "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com")
+    httpRequest.setRequestHeader("X-RapidAPI-Key", "85397e8c0amsh409a2e3be20fce1p18f7c7jsnde35283a8ffb")
+    httpRequest.send()
+}
+
+function processContents() {
+    if(httpRequest.readyState === XMLHttpRequest.DONE){
+        if (httpRequest.status === 200){
+            let data = httpRequest.responseText
+
+            if (data) {
+                data = JSON.parse(data)
+
+                if (data.Quotes) displayMinPrice(data.Quotes)
+            }
+        
+        } else {
+            alert("There was a problem with request")
+        }
+    }
+}
+function displayMinPrice(quotes) {
+    let resultDisplay = document.querySelector(".container > .result-container")
+    let results = ''
+
+    for (let quote in quotes){
+        if (quotes.hasOwnProperty(quote)){
+            results += `<div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Minimum Price</h4>
+                        </div>
+                        <div class="card-body">
+                            <h1 class="card-title pricing-card-title">$${quotes[quote].MinPrice} </h1>
+                            <h1 class="card-title pricing-card-title">${quotes[quote].Direct} </h1>
+                        </div>
+                    </div>`
+        }
+    }
+    resultDisplay.innerHTML = results
+}
+
+
+
+
+
+
+
 
 
